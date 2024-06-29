@@ -11,21 +11,21 @@ REFRESH_INTERVAL = int(os.environ.get("NETATMO_EXPORTER_REFRESH_INTERVAL", 300))
 
 
 # Métriques Prometheus avec labels
-temperature = Gauge('netatmo_temperature', 'Temperature in Celsius',
+netatmo_sensor_temperature_celsius = Gauge('netatmo_temperature', 'Temperature in Celsius',
                     ['station_name', 'address_mac', 'city'])
-humidity = Gauge('netatmo_humidity', 'Relative humidity percentage',
+netatmo_sensor_humidity_percent = Gauge('netatmo_humidity', 'Relative humidity percentage',
                  ['station_name', 'address_mac', 'city'])
-co2 = Gauge('netatmo_co2', 'CO2 level in ppm',
+netatmo_sensor_co2_ppm = Gauge('netatmo_co2', 'CO2 level in ppm',
             ['station_name', 'address_mac', 'city'])
-noise = Gauge('netatmo_noise', 'Noise level in dB',
+netatmo_sensor_noise_db = Gauge('netatmo_noise', 'Noise level in dB',
               ['station_name', 'address_mac', 'city'])
-pressure = Gauge('netatmo_pressure', 'Atmospheric pressure in mbar',
+netatmo_sensor_pressure_mb = Gauge('netatmo_pressure', 'Atmospheric pressure in mbar',
                  ['station_name', 'address_mac', 'city'])
-absolute_pressure = Gauge('netatmo_absolute_pressure', 'Absolute pressure in mbar',
+netatmo_sensor_absolute_pressure_mb = Gauge('netatmo_absolute_pressure', 'Absolute pressure in mbar',
                           ['station_name', 'address_mac', 'city'])
-health_idx = Gauge('netatmo_health_idx', 'Health index',
+netatmo_sensor_health_idx = Gauge('netatmo_health_idx', 'Health index',
                    ['station_name', 'address_mac', 'city'])
-wifi_status = Gauge('netatmo_wifi_status', 'WiFi signal strength',
+netatmo_sensor_rf_signal_strength = Gauge('netatmo_wifi_status', 'WiFi signal strength',
                     ['station_name', 'address_mac', 'city'])
 
 def get_access_token():
@@ -65,14 +65,14 @@ def update_metrics():
 
             dashboard_data = device['dashboard_data']
 
-            temperature.labels(**labels).set(dashboard_data["Temperature"])
-            humidity.labels(**labels).set(dashboard_data["Humidity"])
-            co2.labels(**labels).set(dashboard_data["CO2"])
-            noise.labels(**labels).set(dashboard_data["Noise"])
-            pressure.labels(**labels).set(dashboard_data["Pressure"])
-            absolute_pressure.labels(**labels).set(dashboard_data["AbsolutePressure"])
-            health_idx.labels(**labels).set(dashboard_data["health_idx"])
-            wifi_status.labels(**labels).set(device["wifi_status"])
+            netatmo_sensor_temperature_celsius.labels(**labels).set(dashboard_data["Temperature"])
+            netatmo_sensor_humidity_percent.labels(**labels).set(dashboard_data["Humidity"])
+            netatmo_sensor_co2_ppm.labels(**labels).set(dashboard_data["CO2"])
+            netatmo_sensor_noise_db.labels(**labels).set(dashboard_data["Noise"])
+            netatmo_sensor_pressure_mb.labels(**labels).set(dashboard_data["Pressure"])
+            netatmo_sensor_absolute_pressure_mb.labels(**labels).set(dashboard_data["AbsolutePressure"])
+            netatmo_sensor_health_idx.labels(**labels).set(dashboard_data["health_idx"])
+            netatmo_sensor_rf_signal_strength.labels(**labels).set(device["wifi_status"])
 
     except Exception as e:
         print(f"Erreur lors de la mise à jour des métriques : {e}")
