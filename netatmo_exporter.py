@@ -11,21 +11,21 @@ REFRESH_INTERVAL = int(os.environ.get("NETATMO_EXPORTER_REFRESH_INTERVAL", 300))
 
 
 # Métriques Prometheus avec labels
-netatmo_sensor_temperature_celsius = Gauge('netatmo_temperature', 'Temperature in Celsius',
+netatmo_sensor_temperature_celsius = Gauge('netatmo_sensor_temperature_celsius', 'Temperature in Celsius',
                     ['station_name', 'address_mac', 'city'])
-netatmo_sensor_humidity_percent = Gauge('netatmo_humidity', 'Relative humidity percentage',
+netatmo_sensor_humidity_percent = Gauge('netatmo_sensor_humidity_percent', 'Relative humidity percentage',
                  ['station_name', 'address_mac', 'city'])
-netatmo_sensor_co2_ppm = Gauge('netatmo_co2', 'CO2 level in ppm',
+netatmo_sensor_co2_ppm = Gauge('netatmo_sensor_co2_ppm', 'CO2 level in ppm',
             ['station_name', 'address_mac', 'city'])
-netatmo_sensor_noise_db = Gauge('netatmo_noise', 'Noise level in dB',
+netatmo_sensor_noise_db = Gauge('netatmo_sensor_noise_db', 'Noise level in dB',
               ['station_name', 'address_mac', 'city'])
-netatmo_sensor_pressure_mb = Gauge('netatmo_pressure', 'Atmospheric pressure in mbar',
+netatmo_sensor_pressure_mb = Gauge('netatmo_sensor_pressure_mb', 'Atmospheric pressure in mbar',
                  ['station_name', 'address_mac', 'city'])
-netatmo_sensor_absolute_pressure_mb = Gauge('netatmo_absolute_pressure', 'Absolute pressure in mbar',
+netatmo_sensor_absolute_pressure_mb = Gauge('netatmo_sensor_absolute_pressure_mb', 'Absolute pressure in mbar',
                           ['station_name', 'address_mac', 'city'])
-netatmo_sensor_health_idx = Gauge('netatmo_health_idx', 'Health index',
+netatmo_sensor_health_idx = Gauge('netatmo_sensor_health_idx', 'Health index',
                    ['station_name', 'address_mac', 'city'])
-netatmo_sensor_rf_signal_strength = Gauge('netatmo_wifi_status', 'WiFi signal strength',
+netatmo_sensor_rf_signal_strength = Gauge('netatmo_sensor_rf_signal_strength', 'WiFi signal strength',
                     ['station_name', 'address_mac', 'city'])
 
 def get_access_token():
