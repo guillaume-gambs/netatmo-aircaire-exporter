@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 120s
+  scrape_timeout: 15s
+
+scrape_configs:
+  - job_name: 'netatmo-exporter'
+    scrape_interval: 150s
+    static_configs:
+      - targets: ['netatmo-exporter:8000']
