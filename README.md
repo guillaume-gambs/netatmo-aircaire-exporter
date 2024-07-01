@@ -45,10 +45,17 @@ Pour obtenir un refresh_token, vous devrez d'abord autoriser votre application v
 
 il faut mettre dans `.git/hooks/pre-commit`
 
+Créez un fichier `.git/hooks/pre-commit` (sans extension) avec le contenu suivant :
+
 ```bash
 #!/bin/sh
 python update_version.py
 git add version.py
+```
+
+Rendez ce fichier exécutable :
+```bash
+chmod +x .git/hooks/pre-commit
 ```
 
 ## Utilisation
