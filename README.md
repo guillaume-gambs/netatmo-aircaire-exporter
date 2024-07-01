@@ -41,6 +41,16 @@ export NETATMO_API_URL="https://custom-api-url.com"
 Pour obtenir un refresh_token, vous devrez d'abord autoriser votre application via le flux OAuth 2.0. Consultez la documentation Netatmo pour plus de détails sur ce processus.
 
 
+# Pour les developeurs
+
+il faut mettre dans `.git/hooks/pre-commit`
+
+```bash
+#!/bin/sh
+python update_version.py
+git add version.py
+```
+
 ## Utilisation
 
 Lancez l'exporteur :
