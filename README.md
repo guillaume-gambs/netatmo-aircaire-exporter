@@ -1,93 +1,151 @@
 # Netatmo Home Coach Prometheus Exporter
 
-Ce projet est un exportateur Prometheus pour les données du capteur Netatmo Home Coach. Il récupère les données via l'API Netatmo et les expose dans un format compatible avec Prometheus.
+Netatmo AirCare Exporter est un exportateur Prometheus pour les données des capteurs Netatmo Home Coach.
+
+## Fonctionnalités
+
+- Authentification oauth2 via redirection
+- Récupération des données des capteurs Netatmo Home Coach via l'API Netatmo.
+- Export des métriques vers Prometheus.
 
 ## Prérequis
 
 - Python 3.7+
 - Compte Netatmo et identifiants API
+- Docker (optionnel)
 
 ## Installation
 
+### Sans Docker
+
 1. Clonez ce repository :
 
+    ```bash
+    git clone https://github.com/guillaume-gambs/netatmo-aircaire-exporter.git
+
+    cd netatmo-aircaire-exporter
+    ```
+
+1. Installez les dépendances :
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+1. Configurez vos identifiants Netatmo en tant que variables d'environnement :
+
+    ```bash
+    export NETATMO_CLIENT_ID='your_client_id'
+    export NETATMO_CLIENT_SECRET='your_client_secret'
+    export EXPORTER_PORT=8000
+    ```
+
+1. Démarrez le service :
+
+    ```bash
+    python netatmo_exporter.py
+    ```
+
+### Avec Docker et build des sources
+
+1. Construisez l'image Docker :
+
+    ```sh
+    docker build -t netatmo-aircaire-exporter .
+    ```
+
+1. Exécutez le conteneur :
+
+    ```sh
+    docker run -d -p 8000:8000 \
+        -e NETATMO_CLIENT_ID='your_client_id' \
+        -e NETATMO_CLIENT_SECRET='your_client_secret' \
+        --name my-netatmo-aircaire-exporter netatmo-aircaire-exporter
+    ```
+
+### Avec docker depuis l'image sur ghcr
+
+1. Exécutez le conteneur :
+
+    ```sh
+    docker run -d -p 8000:8000 \
+        -e NETATMO_CLIENT_ID='your_client_id' \
+        -e NETATMO_CLIENT_SECRET='your_client_secret' \
+        --name my-netatmo-aircaire-exporter **ghcr**.io/guillaume-gambs/netatmo-aircaire-exporter:latest
+    ```
+
+### Aller plus loin
+
+Il existe des variable optionnel
+
 ```bash
-git clone https://github.com/votre-nom-utilisateur/netatmo-prometheus-exporter.git
-cd netatmo-prometheus-exporter
+export NETATMO_EXPORTER_PORT=8000
+export NETATMO_EXPORTER_REFRESH_INTERVAL=300
+export NETATMO_API_URL="https://api.netatmo.com/api/gethomecoachsdata"
+export NETATMO_AUTH_URL="https://api.netatmo.com/oauth2/authorize"
+export NETATMO_TOKEN_URL="https://api.netatmo.com/oauth2/token"
+export NETATMO_REDIRECT_URI="http://localhost:{PORT}/callback"
 ```
 
-2. Installez les dépendances :
+### Authentification
 
-```bash
-pip install -r requirements.txt
-```
+Le Netatmo AirCare Exporter utilise le protocole OAuth 2.0 pour s'authentifier auprès de l'API Netatmo. Voici les étapes pour configurer et utiliser l'authentification :
 
-3. Configurez vos identifiants Netatmo en tant que variables d'environnement :
+1. **Obtention des identifiants** :
+   - Créez un compte sur [https://dev.netatmo.com/](https://dev.netatmo.com/)
+   - Créez une nouvelle application pour obtenir un `client_id` et un `client_secret`
 
-```bash
-export NETATMO_CLIENT_ID=votre_client_id
-export NETATMO_CLIENT_SECRET=votre_client_secret
-export NETATMO_REFRESH_TOKEN=votre_refresh_token
-```
+1. **Configuration de l'application** :
+   - Définissez les variables d'environnement `NETATMO_CLIENT_ID` et `NETATMO_CLIENT_SECRET` avec vos identifiants
+   - Vous pouvez les définir dans un fichier `.env` à la racine du projet (assurez-vous de ne pas le committer)
 
-Variable optionnel
-```bash
-export NETATMO_EXPORTER_PORT=9000
-export NETATMO_EXPORTER_REFRESH_INTERVAL=600
-export NETATMO_AUTH_URL="https://custom-auth-url.com"
-export NETATMO_API_URL="https://custom-api-url.com"
-```
+1. **Processus d'authentification** :
+   - Lancez l'application et accédez à `http://127.0.0.1:8000`
+   - Cliquez sur le lien d'autorisation qui vous redirigera vers la page d'authentification Netatmo
+   - Connectez-vous à votre compte Netatmo et autorisez l'application
+   - Vous serez redirigé vers l'application avec un code d'autorisation
 
-Pour obtenir un refresh_token, vous devrez d'abord autoriser votre application via le flux OAuth 2.0. Consultez la documentation Netatmo pour plus de détails sur ce processus.
+1. **Gestion des tokens** :
+   - L'application échangera automatiquement le code d'autorisation contre un access token et un refresh token
+   - Ces tokens seront stockés temporairement dans les variables d'environnement /!\
+   - L'application rafraîchira automatiquement l'access token lorsque nécessaire
 
+1. **Sécurité** :
+   - Ne partagez jamais votre `client_id` et `client_secret`
+   - N'incluez pas ces informations directement dans le code source ou les fichiers de configuration versionnés
+   - En production, utilisez des solutions de gestion de secrets comme Vault, Sealed secret ou les secrets managers des plateformes cloud
+   - Assurez-vous que l'URL de callback est sécurisée et accessible uniquement par votre application
 
-# Pour les developeurs
+1. **Renouvellement de l'autorisation** :
+   - Si vous redémarrez l'application, vous devrez peut-être réautoriser l'accès
+   - Répétez le processus d'authentification si nécessaire
 
-il faut mettre dans `.git/hooks/pre-commit`
+En suivant ces étapes, vous assurez une authentification sécurisée pour accéder aux données de vos capteurs Netatmo via l'API.
+N'oubliez pas de consulter régulièrement la documentation de l'API Netatmo pour toute mise à jour concernant le processus d'authentification.
 
-Créez un fichier `.git/hooks/pre-commit` (sans extension) avec le contenu suivant :
+## Pour les developeurs
 
-```bash
-#!/bin/sh
-python update_version.py
-git add version.py
-```
+### Mise à jour du fichier de version.py via git hook pre-commit
 
-Rendez ce fichier exécutable :
-```bash
-chmod +x .git/hooks/pre-commit
-```
+1. Créez un fichier `.git/hooks/pre-commit` (sans extension) avec le contenu suivant :
+
+    ```bash
+    #!/bin/sh
+    python update_version.py
+    git add version.py
+    ```
+
+1. Rendez ce fichier exécutable :
+
+    ```bash
+    chmod +x .git/hooks/pre-commit
+    ```
 
 ## Utilisation
 
-Lancez l'exporteur :
+Accédez aux métriques via http://localhost:8000/metrics
 
-```bash
-python netatmo_exporter.py
-```
-
-L'exportateur sera accessible à `http://localhost:8000/metrics`.
-
-## Docker
-
-Pour exécuter l'exportateur dans un conteneur Docker :
-
-1. Construisez l'image :
-
-```bash
-docker build -t netatmo-aircaire-exporter .
-```
-
-1. Lancez le conteneur :
-
-```bash
-docker run -d --name netatmo-aircaire-exporter -p 8000:8000 \
--e NETATMO_CLIENT_ID="votre_client_id" \
--e NETATMO_CLIENT_SECRET="votre_client_secret" \
--e NETATMO_REFRESH_TOKEN="votre_refresh_token" \
-netatmo-aircaire-exporter:latest
-```
 
 ## Licence
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](./LICENSE) pour plus de détails.
