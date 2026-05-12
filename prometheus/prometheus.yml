@@ -2,8 +2,11 @@ global:
   scrape_interval: 120s
   scrape_timeout: 15s
 
+rule_files:
+  - /etc/prometheus/alerts.yml
+
 scrape_configs:
   - job_name: 'netatmo-exporter'
-    scrape_interval: 150s
+    scrape_interval: 90s
     static_configs:
       - targets: ['netatmo-exporter:8000']

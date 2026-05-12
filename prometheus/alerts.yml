@@ -1,0 +1,47 @@
+groups:
+  - name: netatmo-exporter
+    rules:
+      - alert: NetatmoExporterDown
+        expr: netatmo_exporter_up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Netatmo Exporter is down"
+          description: "L'exporter n'arrive plus à récupérer les données Netatmo depuis 5 minutes."
+
+      - alert: NetatmoAuthNeeded
+        expr: netatmo_exporter_auth_needed == 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netatmo OAuth2 authorization needed"
+          description: "L'exporter nécessite une ré-autorisation OAuth2. Accédez à http://localhost:8000 pour autoriser."
+
+      - alert: NetatmoCO2High
+        expr: netatmo_sensor_co2_ppm > 1000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CO2 level is high ({{ $value }} ppm)"
+          description: "Le niveau de CO2 de {{ $labels.station_name }} ({{ $labels.city }}) dépasse 1000 ppm depuis 10 minutes. Pensez à aérer."
+
+      - alert: NetatmoCO2Critical
+        expr: netatmo_sensor_co2_ppm > 2000
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CO2 level is critical ({{ $value }} ppm)"
+          description: "Le niveau de CO2 de {{ $labels.station_name }} ({{ $labels.city }}) dépasse 2000 ppm."
+
+      - alert: NetatmoScrapeErrors
+        expr: rate(netatmo_exporter_scrape_errors_total[15m]) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Netatmo scrape errors detected"
+          description: "Des erreurs de scrape ont été détectées sur les 15 dernières minutes."
