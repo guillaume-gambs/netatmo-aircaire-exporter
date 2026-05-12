@@ -1,3 +1,3 @@
-__version__ = "v-1.1.0-3-g613751d"
-__commit_sha__ = "613751d1d55a968a458b14cd9a9321839b789654"
-__git_tag__ = "v-1.1.0-3-g613751d"
+__version__ = "v-1.1.0-4-g9b2ed43"
+__commit_sha__ = "9b2ed43918e284208222b8e2af3029487f1d0193"
+__git_tag__ = "v-1.1.0-4-g9b2ed43"
