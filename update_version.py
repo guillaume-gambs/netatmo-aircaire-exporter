@@ -7,12 +7,12 @@ def get_git_info():
         commit_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
         git_tag = subprocess.check_output(['git', 'describe', '--tags', '--always']).decode('ascii').strip()
         return commit_sha, git_tag
-    except:
+    except Exception:
         return "unknown", "unknown"
 
 def update_version_file():
     commit_sha, git_tag = get_git_info()
-    
+
     with open('version.py', 'w') as f:
         f.write(f'__version__ = "{git_tag}"\n')
         f.write(f'__commit_sha__ = "{commit_sha}"\n')
